@@ -23,11 +23,24 @@ Content loading also needed to be highly refined allowing me to control each sou
 
 ## How to use
 ### Prerequisites
+- Python 3.11 (may work on older, but this was the target version used)
 - AWS Account with keys defined in .env file (sample provided)
 - OpenSearch Domain created and accessible
 - AWS Bedrock with Titan Express LLM (or other LLM supported by this code)
 - Ideally an LangChain (LangSmith) API Key defined in .env file (or removed if not using LangSmith)
 - Python dependencies installed (dependency manager for this project coming soon)
+- python libraries installed
+- pip install jupyter 
+- pip install langchain
+- pip install python-dotenv
+- pip install langchain-openai
+- pip install boto3
+- pip install requests-aws4auth
+- pip install opensearch-py
+- pip install selenium
+- pip install unstructured
+
+
 
 ### Sample Code
 This is a very simple, high-level example.  Check out the rag_bot_code_samples.ipynb for a more.
