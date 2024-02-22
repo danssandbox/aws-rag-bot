@@ -1,19 +1,19 @@
 import boto3
+from dotenv import find_dotenv, load_dotenv
 from langchain.llms.bedrock import Bedrock
-#from opensearch_vectordb import query_opensearch_vector_db, get_opensearch_vector_db_client, EmbeddingTypes
-from open_search_vector_db.aws_opensearch_vector_database import (
-    EmbeddingTypes,
-    OpenSearchVectorDBQuery
-)
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_openai import ChatOpenAI
-from dotenv import find_dotenv, load_dotenv
 from langchain.schema.runnable import RunnableConfig
 from langchain.callbacks.base import BaseCallbackHandler
-from prompt_library import DefaultPrompts
 
+# Code in this project
+from open_search_vector_db.aws_opensearch_vector_database import (
+    EmbeddingTypes,
+    OpenSearchVectorDBQuery
+)
+from prompt_library import DefaultPrompts
 
 class LlmModelTypes:
     BEDROCK_LLAMA2 = "bedrock_llama2"
@@ -118,7 +118,8 @@ class RagChatbot:
         return self.__llm_model.get_num_tokens(string)
 
     # Constructor
-    def __init__(self, model_key=LlmModelTypes.BEDROCK_TITAN_EXPRESS
+    def __init__(self, vector_db_domain
+                 , model_key=LlmModelTypes.BEDROCK_TITAN_EXPRESS
                  , prompt_model=None
                  , embedding_model=EmbeddingTypes.BEDROCK_DEFAULT
                  , verbose=False):
@@ -142,7 +143,7 @@ class RagChatbot:
 
         # Initialize the LLM model, memory, and chain
         self.__llm_model = self.__get_llm_model()
-        vector_db = OpenSearchVectorDBQuery(domain_name='rise-gardens-kb-v2',
+        vector_db = OpenSearchVectorDBQuery(domain_name=vector_db_domain,
                                             index_name=index_name,
                                             embedding_model=embedding_model)
         self.__vector_db = vector_db.get_client()

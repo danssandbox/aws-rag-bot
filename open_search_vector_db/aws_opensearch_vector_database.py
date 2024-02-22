@@ -6,17 +6,17 @@ from langchain_community.document_loaders import (
 )
 from dotenv import find_dotenv, load_dotenv
 from langchain_openai import OpenAIEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain.embeddings.bedrock import BedrockEmbeddings
 from langchain_community.vectorstores import OpenSearchVectorSearch
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import boto3
-import pprint
 from requests_aws4auth import AWS4Auth
 from opensearchpy import RequestsHttpConnection
 import requests
 import xml.etree.ElementTree as ET
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain.embeddings.bedrock import BedrockEmbeddings
-from kustomer import get_all_shortcuts_as_documents
+
+from open_search_vector_db.kustomer import get_all_shortcuts_as_documents
 import re
 
 DEFAULT_CHUNK_SIZE = 256

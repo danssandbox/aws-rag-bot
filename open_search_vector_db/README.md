@@ -43,14 +43,24 @@ How the json works for loading
 
 ## Research References
 
-## Bascs of creating an AWS OpenSearch Vector Database
-Need to define
+## Basics of creating an AWS OpenSearch Vector Database
+Need to define - just point to references I used
 
 
 ### TODO:
-1. Add OpenSearch serverless to the class as an option
+MVP
+1. Edit for better and complete style (use GPT) - look at other refs
+2. Add json structure for data sources
+3. Add references (for creating search and using via LangChain)
+4. Remove prereq for now and follow-up with it
+
+Future
+1. Finish whitelist and blacklist for directory loads
+2. Add OpenSearch serverless to the class as an option
 2. Add an S3 directory loader
 3. Add a Google Drive loader
+4. Clean-up Kustomer use of param store - use .env file instead
+5. Create a simple test file to run through tests of mine... validating each major function
 
 
 https://blog.langchain.dev/improving-document-retrieval-with-contextual-compression/
