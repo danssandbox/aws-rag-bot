@@ -83,8 +83,8 @@ class RagChatbot:
         "client_name": "bedrock-runtime",
         "region_name": "us-east-1",
         "kwargs": {
-            "maxTokenCount": 500,
-            "temperature": 0.5,
+            "maxTokenCount": 1000,
+            "temperature": 0.1,
             "topP": 0.5,
         },
         "model_cost": {

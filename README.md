@@ -8,6 +8,8 @@ The frameworks I created here abstract out a variety of components to enable eas
 content being use in my applications.  The goal is to play with different LLM's, different embeddings, parameters like temperature, top_p and more.
 Content loading also needed to be highly refined allowing me to control each source easily.
 
+This library is meant more to provide a complete working set of examples and less to be an out-of-the-box library to use as-is.
+
 
 ## Features and aspects of interest
 - **LangChain** - Great framework building Generative AI applications. 
@@ -15,6 +17,7 @@ Content loading also needed to be highly refined allowing me to control each sou
 - **LangChain LLM Callbacks** - Example of using LLM Callbacks, provided here for custom costing 
 - **Conversational Memory** -- Designed to manage chat history memory from the client side - to support a serverless model
 - **OpenSearch** - an AWS hosted semantic search service which has a vector database that is valuable in the retrieval feature of RAG
+- **OpenSearch loading library** - making it easier to load multiple content sources into an OpenSearch vector database.
 - **Langchain LCEL Chains** - for more flexible chaining of steps in the RAG app
 - **Multiple embedding models** - Defaults to Bedrock Titan, but supports OpenAI and Hugging Face
 - **Web and directory crawlers** - for loading content into the vector DB.  Lots of fine-tuning to document selection features - whitelisting, black listing, etc.
@@ -29,18 +32,6 @@ Content loading also needed to be highly refined allowing me to control each sou
 - AWS Bedrock with Titan Express LLM (or other LLM supported by this code)
 - Ideally an LangChain (LangSmith) API Key defined in .env file (or removed if not using LangSmith)
 - Python dependencies installed (dependency manager for this project coming soon)
-- python libraries installed
-- pip install jupyter 
-- pip install langchain
-- pip install python-dotenv
-- pip install langchain-openai
-- pip install boto3
-- pip install requests-aws4auth
-- pip install opensearch-py
-- pip install selenium
-- pip install unstructured
-
-
 
 ### Sample Code
 This is a very simple, high-level example.  Check out the rag_bot_code_samples.ipynb for a more.
@@ -95,9 +86,7 @@ I also used the directory loader and plan to implement cloud based directory loa
 - https://docs.smith.langchain.com
 
 
-
 ### What's next (Roadmap):
 1. Add Google Gemini, variants of OpenAI and variants of Bedrock
 2. Add vector database stub for FAISS and easy testing
 3. Expand range of support for Embeddings - including Hugging Face cloud service for embeddings
-4. Leverage RAGAS for validation and to support heavy testing and tuning
