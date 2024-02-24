@@ -5,6 +5,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.schema.runnable import RunnableConfig
 from langchain.callbacks.base import BaseCallbackHandler
 
@@ -20,6 +21,8 @@ class LlmModelTypes:
     BEDROCK_JURRASIC2_ULTRA = "bedrock_jurrasic2_ultra"
     BEDROCK_TITAN_EXPRESS = "bedrock_titan_express"
     OPENAI_GPT4 = "openai_gpt4"
+    OPENAI_GPT35 = "openai_gpt35"
+    GOOGLE_GEMINI_PRO = "google_gemini_pro"
 
 
 def structure_message_history(chat_history):
@@ -101,7 +104,28 @@ class RagChatbot:
         "kwargs": {
             "maxTokens": 500,
             "temperature": 0.5,
-            "topP": 0.5,
+        }
+    }
+
+    __open_ai_model_def_gpt35 = {
+        "key": "openai_gpt35",
+        "name": "OpenAI GPT-3.5 Turbo",
+        "id": "gpt-3.5-turbo",
+        "client_name": "openai",
+        "kwargs": {
+            "maxTokens": 500,
+            "temperature": 0.5,
+        }
+    }
+
+    __google_gemini_pro = {
+        "key": "google_gemini_pro",
+        "name": "Google Gemini Pro",
+        "id": "gemini-pro",
+        "client_name": "google",
+        "kwargs": {
+            "maxTokens": 500,
+            "temperature": 0.5,
         }
     }
 
@@ -109,7 +133,9 @@ class RagChatbot:
         __bedrock_model_def_llama2,
         __bedrock_model_def_jurrasic2_ultra,
         __bedrock_model_def_titan_express,
-        __open_ai_model_def_gpt4
+        __open_ai_model_def_gpt4,
+        __open_ai_model_def_gpt35,
+        __google_gemini_pro
     ]
     __current_model = None
     __prompt_model = None
@@ -156,26 +182,37 @@ class RagChatbot:
             print(f"  - client: {self.__current_model['client_name']}")
             print(f"  - id: {self.__current_model['id']}")
 
+        llm_model_kwargs = self.__current_model['kwargs']
+
+        # Override settings with the prompt model settings
+        llm_model_kwargs['temperature'] = self.__prompt_model.llm_temperature
+        if 'topP' in llm_model_kwargs:
+            llm_model_kwargs['topP'] = self.__prompt_model.llm_top_p
+
+        if 'top_p' in llm_model_kwargs:
+            llm_model_kwargs['top_p'] = self.__prompt_model.llm_top_p
+
         llm_model = None
         # Handle creating Bedrock Models
         if self.__current_model['client_name'] == 'bedrock-runtime':
             # Explicitly create client with boto3 to get better control and transparency
             bedrock = boto3.client('bedrock-runtime', region_name=self.__current_model['region_name'])
-            bedrock_kwargs = self.__current_model['kwargs']
 
-            # Override settings with the prompt model settings
-            bedrock_kwargs['temperature'] = self.__prompt_model.llm_temperature
-            bedrock_kwargs['topP'] = self.__prompt_model.llm_top_p
 
             llm_model = Bedrock(
                 model_id=self.__current_model['id'],
                 client=bedrock,
-                model_kwargs=bedrock_kwargs
+                model_kwargs=llm_model_kwargs
             )
 
         elif self.__current_model['client_name'] == 'openai':
-            #temp = self.__current_model['kwargs']['temperature']
-            llm_model = ChatOpenAI(model=self.__current_model['id'])
+            temp = llm_model_kwargs['temperature']
+            llm_model = ChatOpenAI(model=self.__current_model['id'], temperature=temp)
+
+        elif self.__current_model['client_name'] == 'google':
+            temp = llm_model_kwargs['temperature']
+            llm_model = ChatGoogleGenerativeAI(model=self.__current_model['id'], temperature=temp)
+
 
         else:
             raise Exception("Unsupported client_name: {}".format(self.__current_model['client_name']))

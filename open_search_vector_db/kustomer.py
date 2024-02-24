@@ -1,15 +1,14 @@
 import requests
 from langchain_core.documents import Document
 import boto3
+import os
+from dotenv import load_dotenv
 
 
 def get_all_shortcuts_as_documents(kustomer_function):
     # Get additional configuration
-    aws_region = 'us-east-2'
-    ssm = boto3.client('ssm', region_name=aws_region)
-    kustomer_api_key_param_path = f"/prod/reporting/dw/kustomer_api_key"
-    kustomer_api_key_param_obj = ssm.get_parameter(Name=kustomer_api_key_param_path, WithDecryption=True)
-    kustomer_api_key = kustomer_api_key_param_obj['Parameter']['Value']
+    load_dotenv()
+    kustomer_api_key = os.getenv('KUSTOMER_API_KEY')
 
     base_url = "https://api.kustomerapp.com"
     initial_url = f"{base_url}/{kustomer_function}"
@@ -18,6 +17,7 @@ def get_all_shortcuts_as_documents(kustomer_function):
         "Content-Type": "application/json"
     }
 
+    print(f"Fetching shortcuts from {initial_url}")
     documents = []
     url = initial_url
     while url:
