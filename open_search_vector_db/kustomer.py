@@ -2,12 +2,12 @@ import requests
 from langchain_core.documents import Document
 import boto3
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 
 def get_all_shortcuts_as_documents(kustomer_function):
     # Get additional configuration
-    load_dotenv()
+    load_dotenv(find_dotenv())
     kustomer_api_key = os.getenv('KUSTOMER_API_KEY')
 
     base_url = "https://api.kustomerapp.com"
