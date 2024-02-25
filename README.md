@@ -13,7 +13,7 @@ This library is meant more to provide a complete working set of examples and les
 
 ## Features and aspects of interest
 - **LangChain** - Great framework building Generative AI applications. 
-- **LLM Model Support** - Defaults to AWS Bedrock Titan LLM, but supports other Bedrock models (LLama 2, Jurassic) OpenAI, Google Gemini
+- **LLM Model Support** - Defaults to AWS Bedrock Titan LLM, but supports other Bedrock models (LLama 2, Jurassic) OpenAI (GTP-3.5 and GTP-4), Google Gemini
 - **LangChain LLM Callbacks** - Example of using LLM Callbacks, provided here for custom costing 
 - **Conversational Memory** -- Designed to manage chat history memory from the client side - to support a serverless model
 - **OpenSearch** - an AWS hosted semantic search service which has a vector database that is valuable in the retrieval feature of RAG
@@ -27,11 +27,23 @@ This library is meant more to provide a complete working set of examples and les
 ## How to use
 ### Prerequisites
 - Python 3.11 (may work on older, but this was the target version used)
-- AWS Account with keys defined in .env file (sample provided)
-- OpenSearch Domain created and accessible
-- AWS Bedrock with Titan Express LLM (or other LLM supported by this code)
-- Ideally an LangChain (LangSmith) API Key defined in .env file (or removed if not using LangSmith)
+- AWS Account with keys defined in .aws/credentials file
+- AWS OpenSearch Domain created and accessible to the AWS account credentials above
+- AWS Bedrock with Titan Express LLM (or other LLM supported by this code) - you may need to request access
+- Ideally a LangChain (LangSmith) API Key defined in .env file (or removed if not using LangSmith) for logging and monitoring
+- If using google gemini or openai, you will need to have an account and keys for those services and have them defined in the .env file
 - Python dependencies installed (dependency manager for this project coming soon)
+
+python libraries installed
+- ```pip install jupyter ```
+- ```pip install langchain```
+- ```pip install python-dotenv```
+- ```pip install langchain-openai```
+- ```pip install boto3```
+- ```pip install requests-aws4auth```
+- ```pip install opensearch-py```
+- ```pip install selenium```
+- ```pip install unstructured```
 
 ### Sample Code
 This is a very simple, high-level example.  Check out the rag_bot_code_samples.ipynb for a more.
@@ -87,6 +99,5 @@ I also used the directory loader and plan to implement cloud based directory loa
 
 
 ### What's next (Roadmap):
-1. Add Google Gemini, variants of OpenAI and variants of Bedrock
-2. Add vector database stub for FAISS and easy testing
-3. Expand range of support for Embeddings - including Hugging Face cloud service for embeddings
+1. Add vector database stub for FAISS and easy testing
+1. Expand range of support for Embeddings - including Hugging Face cloud service for embeddings

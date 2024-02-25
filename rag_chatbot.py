@@ -63,6 +63,10 @@ class RagChatbot:
             "max_gen_len": 500,
             "temperature": 0.2,
             "top_p": 0.2,
+        },
+        "model_cost": {
+            "input_token_cost": 0.00195 / 1000,
+            "output_token_cost": 0.00256 / 1000
         }
     }
 
@@ -76,6 +80,10 @@ class RagChatbot:
             "maxTokens": 500,
             "temperature": 0.5,
             "topP": 0.5,
+        },
+        "model_cost": {
+            "input_token_cost": 0.0188 / 1000,
+            "output_token_cost": 0.0188 / 1000
         }
     }
 
@@ -104,6 +112,10 @@ class RagChatbot:
         "kwargs": {
             "maxTokens": 500,
             "temperature": 0.5,
+        },
+        "model_cost": {
+            "input_token_cost": 0.03 / 1000,
+            "output_token_cost": 0.06 / 1000
         }
     }
 
@@ -115,6 +127,10 @@ class RagChatbot:
         "kwargs": {
             "maxTokens": 500,
             "temperature": 0.5,
+        },
+        "model_cost": {
+            "input_token_cost": 0.0005 / 1000,
+            "output_token_cost": 0.0015 / 1000
         }
     }
 
@@ -126,6 +142,10 @@ class RagChatbot:
         "kwargs": {
             "maxTokens": 500,
             "temperature": 0.5,
+        },
+        "model_cost": { # uses cost/char... estimated at 4 chars per token
+            "input_token_cost": 0.000125 * 4 / 1000,
+            "output_token_cost": 0.000375 * 4 / 1000
         }
     }
 
@@ -211,7 +231,9 @@ class RagChatbot:
 
         elif self.__current_model['client_name'] == 'google':
             temp = llm_model_kwargs['temperature']
-            llm_model = ChatGoogleGenerativeAI(model=self.__current_model['id'], temperature=temp)
+            llm_model = ChatGoogleGenerativeAI(model=self.__current_model['id']
+                                               , temperature=temp
+                                               , convert_system_message_to_human=True)
 
 
         else:
@@ -222,9 +244,12 @@ class RagChatbot:
     def get_llm_model(self):
         return self.__llm_model
 
-    def ask_question(self, question, conversation_history, verbose=False):
+    def ask_question(self, question, conversation_history=None, verbose=False):
         contextualize_q_chain = self.__prompt_model.contextualize_q_prompt | self.__llm_model | StrOutputParser()
         retriever = self.__vector_db.as_retriever()
+
+        if conversation_history is None:
+            conversation_history = []
 
         class MyCallback(BaseCallbackHandler):
             # https://how.wtf/how-to-count-amazon-bedrock-anthropic-tokens-with-langchain.html
@@ -285,7 +310,10 @@ class RagChatbot:
         self.__total_output_tokens += my_callback_handler.output_tokens
         self.__last_run_prompt = my_callback_handler.prompt
 
-        return response
+        if type(response) == AIMessage:
+            return response
+        else:  # This is needed because some LLM's will return a string instead of a AIMessage, like Titan Express
+            return AIMessage(content=response)
 
     def get_model_run_summary(self):
         return {
